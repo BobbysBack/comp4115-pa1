@@ -1,0 +1,146 @@
+PART ONE::::
+
+1.) The test database does not have any tables.
+
+2.)
+
+mysql> desc func;
++-------+------------------------------+------+-----+---------+-------+
+| Field | Type                         | Null | Key | Default | Extra |
++-------+------------------------------+------+-----+---------+-------+
+| name  | char(64)                     | NO   | PRI |         |       |
+| ret   | tinyint(1)                   | NO   |     | 0       |       |
+| dl    | char(128)                    | NO   |     |         |       |
+| type  | enum('function','aggregate') | NO   |     | NULL    |       |
++-------+------------------------------+------+-----+---------+-------+
+4 rows in set (0.06 sec)
+
+mysql> select count(*) from func;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+1 row in set (0.00 sec)
+
+It seems to be some sort of table for storing func(tions). It can't be the default ones like count, or show
+since they work but aren't in the table, so it must be user functions or something.
+
+Name would obviously be the function's name. Ret is probably a return type or something. I'm not sure what the
+dl field is. A file path or something maybe. The type field seems to be whether or not the function is
+an aggregate function (count, sum, etc) or not.
+
+3.)
+
+mysql> desc states;
++-------------+--------------------------------+------+-----+---------+----------------+
+| Field       | Type                           | Null | Key | Default | Extra          |
++-------------+--------------------------------+------+-----+---------+----------------+
+| id          | int(11)                        | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(20)                    | YES  |     | NULL    |                |
+| population  | int(11)                        | YES  |     | NULL    |                |
+| temperature | int(11)                        | YES  |     | NULL    |                |
+| political   | enum('left','right','neutral') | YES  |     | NULL    |                |
++-------------+--------------------------------+------+-----+---------+----------------+
+5 rows in set (0.01 sec)
+
+Using completely bogus data (besides the state name)...
+
+mysql> select * from states order by population desc;
++----+------------+------------+-------------+-----------+
+| id | name       | population | temperature | political |
++----+------------+------------+-------------+-----------+
+|  7 | Wisconsin  |         40 |          10 | left      |
+|  6 | Kentucky   |         30 |          15 | neutral   |
+|  5 | Ohio       |         25 |          25 | right     |
+|  4 | California |         20 |          22 | left      |
+|  2 | Tennessee  |         15 |          19 | right     |
+|  3 | Oklahhoma  |         12 |          30 | neutral   |
+|  1 | Alabama    |         10 |          20 | left      |
+|  9 | Montana    |          9 |          33 | neutral   |
+| 10 | Hawaii     |          4 |          50 | left      |
+|  8 | Kansas     |          1 |          40 | right     |
++----+------------+------------+-------------+-----------+
+10 rows in set (0.00 sec)
+
+
+Using my completely bogus data, the politically right states tend to have higher temperatures (by a tiny amount)!
+mysql> select political, count(political), avg(temperature) as average_temp from states group by political;
++-----------+------------------+--------------+
+| political | count(political) | average_temp |
++-----------+------------------+--------------+
+| left      |                4 |      25.5000 |
+| right     |                3 |      28.0000 |
+| neutral   |                3 |      26.0000 |
++-----------+------------------+--------------+
+3 rows in set (0.00 sec)
+
+
+
+
+PART TWO::::
+
+mysql> load data infile 'states.txt' into table states lines terminated by '\r\n' (name, population, temperature, political);
+Query OK, 40 rows affected (0.04 sec)
+Records: 40  Deleted: 0  Skipped: 0  Warnings: 0
+
+(The terminated by '\r\n' was necessary for me on windows for some reason.)
+
+mysql> select * from states order by name;
++----+----------------+------------+-------------+-----------+
+| id | name           | population | temperature | political |
++----+----------------+------------+-------------+-----------+
+|  1 | Alabama        |         10 |          20 | left      |
+| 11 | Alaska         |          7 |         -20 | left      |
+| 12 | Arizona        |         66 |          30 | right     |
+| 13 | Arkansas       |         29 |          22 | neutral   |
+|  4 | California     |         20 |          22 | left      |
+| 14 | Colorado       |         52 |         -10 | left      |
+| 15 | Connecticut    |         36 |          20 | neutral   |
+| 16 | Delaware       |          9 |          15 | right     |
+| 17 | Florida        |         20 |          50 | right     |
+| 18 | Georgia        |         99 |          31 | right     |
+| 10 | Hawaii         |          4 |          50 | left      |
+| 19 | Idaho          |         16 |          22 | neutral   |
+| 20 | Illinois       |        128 |          10 | left      |
+| 21 | Indiana        |         66 |          20 | neutral   |
+| 22 | Iowa           |         31 |          33 | right     |
+|  8 | Kansas         |          1 |          40 | right     |
+|  6 | Kentucky       |         30 |          15 | neutral   |
+| 23 | Louisiana      |         46 |          39 | neutral   |
+| 24 | Maine          |         13 |           5 | right     |
+| 25 | Maryland       |         60 |          25 | left      |
+| 26 | Massachusetts  |         67 |          30 | neutral   |
+| 27 | Michigan       |        100 |          40 | right     |
+| 28 | Minnesota      |         54 |          30 | left      |
+| 29 | Mississippi    |         30 |          35 | right     |
+| 30 | Missouri       |         60 |          25 | right     |
+|  9 | Montana        |          9 |          33 | neutral   |
+| 31 | Nebraska       |         19 |           5 | left      |
+| 32 | Nevada         |         28 |          10 | neutral   |
+| 33 | New Hampshire  |         13 |          20 | right     |
+| 34 | New Jersey     |         89 |          11 | left      |
+| 35 | New Mexico     |         21 |          45 | right     |
+| 36 | New York       |        200 |          20 | left      |
+| 37 | North Carolina |         98 |          25 | neutral   |
+| 38 | North Dakota   |          7 |          23 | right     |
+|  5 | Ohio           |         25 |          25 | right     |
+|  3 | Oklahoma       |         12 |          30 | neutral   |
+| 39 | Oregon         |         39 |          42 | right     |
+| 40 | Pennsylvania   |        128 |          40 | right     |
+| 41 | Rhode Island   |         11 |           5 | neutral   |
+| 42 | South Carolina |         48 |          30 | right     |
+| 43 | South Dakota   |          8 |          20 | neutral   |
+|  2 | Tennessee      |         15 |          19 | right     |
+| 44 | Texas          |        264 |          43 | right     |
+| 45 | Utah           |         29 |          35 | neutral   |
+| 46 | Vermont        |          6 |          15 | left      |
+| 47 | Virginia       |         82 |          15 | left      |
+| 48 | Washington     |         70 |          20 | neutral   |
+| 49 | West Virginia  |         18 |          25 | neutral   |
+|  7 | Wisconsin      |         40 |          10 | left      |
+| 50 | Wyoming        |          6 |          40 | right     |
++----+----------------+------------+-------------+-----------+
+50 rows in set (0.00 sec)
+
+

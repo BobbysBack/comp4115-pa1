@@ -1,0 +1,40 @@
+Alaska	7	-20	left
+Arizona	66	30	right
+Arkansas	29	22	neutral
+Colorado	52	-10	left
+Connecticut	36	20	neutral
+Delaware	9	15	right
+Florida	20	50	right
+Georgia	99	31	right
+Idaho	16	22	neutral
+Illinois	128	10	left
+Indiana	66	20	neutral
+Iowa	31	33	right
+Louisiana	46	39	neutral
+Maine	13	5	right
+Maryland	60	25	left
+Massachusetts	67	30	neutral
+Michigan	100	40	right
+Minnesota	54	30	left
+Mississippi	30	35	right
+Missouri	60	25	right
+Nebraska	19	5	left
+Nevada	28	10	neutral
+New Hampshire	13	20	right
+New Jersey	89	11	left
+New Mexico	21	45	right
+New York	200	20	left
+North Carolina	98	25	neutral
+North Dakota	7	23	right
+Oregon	39	42	right
+Pennsylvania	128	40	right
+Rhode Island	11	5	neutral
+South Carolina	48	30	right
+South Dakota	8	20	neutral
+Texas	264	43	right
+Utah	29	35	neutral
+Vermont	6	15	left
+Virginia	82	15	left
+Washington	70	20	neutral
+West Virginia	18	25	neutral
+Wyoming	6	40	right
